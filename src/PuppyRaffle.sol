@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.6;
-// @audit-info use of floating pragma is bad!
-// @audit-info also... why are you using 0.7????
+// report-written use of floating pragma is bad!
+// report-written also... why are you using 0.7????
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -25,7 +25,7 @@ contract PuppyRaffle is ERC721, Ownable {
     address[] public players;
 
     // e how long does the raffle lasts
-    // @audit-gas this should be immutable
+    // written this should be immutable
     uint256 public raffleDuration;
     uint256 public raffleStartTime;
     address public previousWinner;
@@ -40,7 +40,7 @@ contract PuppyRaffle is ERC721, Ownable {
     mapping(uint256 => string) public rarityToName;
 
     // Stats for the common puppy (pug)
-    // @audit-gas should be constant
+    // =written should be constant
     string private commonImageUri = "ipfs://QmSsYRx3LpDAb1GZQm7zZ1AuHZjfbPkD6J7s9r41xu1mf8";
     uint256 public constant COMMON_RARITY = 70;
     string private constant COMMON = "common";
@@ -65,7 +65,7 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @param _raffleDuration the duration in seconds of the raffle
     constructor(uint256 _entranceFee, address _feeAddress, uint256 _raffleDuration) ERC721("Puppy Raffle", "PR") {
         entranceFee = _entranceFee;
-        // @audit-info check for zero address!
+        // written check for zero address!
         // input validation
         feeAddress = _feeAddress;
         raffleDuration = _raffleDuration;
@@ -92,7 +92,7 @@ contract PuppyRaffle is ERC721, Ownable {
         }
 
         // Check for duplicates
-        // @audit-gas uint256 playerLength = players.length;
+        // written uint256 playerLength = players.length;
         for (uint256 i = 0; i < players.length - 1; i++) {
             for (uint256 j = i + 1; j < players.length; j++) {
                 require(players[i] != players[j], "PuppyRaffle: Duplicate player");
@@ -105,16 +105,16 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @param playerIndex the index of the player to refund. You can find it externally by calling `getActivePlayerIndex`
     /// @dev This function will allow there to be blank spots in the array
     function refund(uint256 playerIndex) public {
-        // @audit MEV
+        // written-skipped MEV
         address playerAddress = players[playerIndex];
         require(playerAddress == msg.sender, "PuppyRaffle: Only the player can refund");
         require(playerAddress != address(0), "PuppyRaffle: Player already refunded, or is not active");
 
-        // @audit Reentrancy
+        // written Reentrancy
         payable(msg.sender).sendValue(entranceFee);
 
         players[playerIndex] = address(0);
-        // @audit-low
+        // written
         // If an event can be manipulated
         // An event is missing
         // An event is wrong
@@ -124,13 +124,17 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @notice a way to get the index in the array
     /// @param player the address of a player in the raffle
     /// @return the index of the player in the array, if they are not active, it returns 0
+
+    // IMPACT: MEDIUM/LOW
+    // LIKELIHOOD: LOW/HIGH
+    // SEVERIFY: LOW
     function getActivePlayerIndex(address player) external view returns (uint256) {
         for (uint256 i = 0; i < players.length; i++) {
             if (players[i] == player) {
                 return i;
             }
         }
-        // @audit if the player is at index 0, it'll return 0 and a player might think they are not active!
+        /// written if the player is at index 0, it'll return 0 and a player might think they are not active!
         return 0;
     }
 
@@ -141,20 +145,19 @@ contract PuppyRaffle is ERC721, Ownable {
     /// @dev we reset the active players array after the winner is selected
     /// @dev we send 80% of the funds to the winner, the other 20% goes to the feeAddress
     function selectWinner() external {
-        // @audit-info recommend to follow CEI
+        // written recommend to follow CEI
         require(block.timestamp >= raffleStartTime + raffleDuration, "PuppyRaffle: Raffle not over");
         require(players.length >= 4, "PuppyRaffle: Need at least 4 players");
 
-        // @audit randomness
+         //written randomness
         // fixes: Chainlink VRF, Commit Reveal Scheme
         uint256 winnerIndex =
             uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp, block.difficulty))) % players.length;
         address winner = players[winnerIndex];
 
-        // @audit-info why not just do address(this).balance?
+        // report-skipped why not just do address(this).balance?
         uint256 totalAmountCollected = players.length * entranceFee;
-
-        // @audit-info Magic numbers
+        //  Magic numbers
         // uint256 public constant PRIZE_POOL_PERCENTAGE=80;
         // uint256 public constant FEE_PERCENTAGE = 20;
         // uint256 public constant POOL_PRECISION = 100;
