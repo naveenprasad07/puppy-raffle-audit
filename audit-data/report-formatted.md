@@ -1,3 +1,115 @@
+---
+title: Protocol Audit Report
+author: Naveen
+date: April 24, 2025
+header-includes:
+  - \usepackage{titling}
+  - \usepackage{graphicx}
+---
+
+\begin{titlepage}
+\centering
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{logo.pdf}
+\end{figure}
+\vspace\*{2cm}
+{\Huge\bfseries Protocol Audit Report\par}
+\vspace{1cm}
+{\Large Version 1.0\par}
+\vspace{2cm}
+{\Large\itshape Naveen\par}
+\vfill
+{\large \today\par}
+\end{titlepage}
+
+\maketitle
+
+<!-- Your report starts here! -->
+
+Prepared by: [Cyfrin](https://cyfrin.io)
+Lead Auditors:
+
+- xxxxxxx
+
+# Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Protocol Summary](#protocol-summary)
+- [Disclaimer](#disclaimer)
+- [Risk Classification](#risk-classification)
+- [Audit Details](#audit-details)
+  - [Scope](#scope)
+  - [Roles](#roles)
+- [Executive Summary](#executive-summary)
+  - [Issues found](#issues-found)
+- [Findings](#findings)
+- [High](#high)
+- [Medium](#medium)
+- [Low](#low)
+- [Informational](#informational)
+- [Gas](#gas)
+
+# Protocol Summary
+
+1. Call the `enterRaffle` function with the following parameters:
+   1. `address[] participants`: A list of addresses that enter. You can use this to enter yourself multiple times, or yourself and a group of your friends.
+2. Duplicate addresses are not allowed
+3. Users are allowed to get a refund of their ticket & `value` if they call the `refund` function
+4. Every X seconds, the raffle will be able to draw a winner and be minted a random puppy
+5. The owner of the protocol will set a feeAddress to take a cut of the `value`, and the rest of the funds will be sent to the winner of the puppy.
+
+# Disclaimer
+
+The YOUR_NAME_HERE team makes all effort to find as many vulnerabilities in the code in the given time period, but holds no responsibilities for the findings provided in this document. A security audit by the team is not an endorsement of the underlying business or product. The audit was time-boxed and the review of the code was solely on the security aspects of the Solidity implementation of the contracts.
+
+# Risk Classification
+
+|            |        | Impact |        |     |
+| ---------- | ------ | ------ | ------ | --- |
+|            |        | High   | Medium | Low |
+|            | High   | H      | H/M    | M   |
+| Likelihood | Medium | H/M    | M      | M/L |
+|            | Low    | M      | M/L    | L   |
+
+We use the [CodeHawks](https://docs.codehawks.com/hawks-auditors/how-to-evaluate-a-finding-severity) severity matrix to determine severity. See the documentation for more details.
+
+# Audit Details
+
+- Commit Hash: 2a47715b30cf11ca82db148704e67652ad679cd8
+- In Scope:
+
+## Scope
+
+```
+./src/
+#── PuppyRaffle.sol
+```
+
+## Roles
+
+Owner - Deployer of the protocol, has the power to change the wallet address to which fees are sent through the `changeFeeAddress` function.
+Player - Participant of the raffle, has the power to enter the raffle with the `enterRaffle` function and refund value through `refund` function.
+
+# Executive Summary
+
+I loved auditing this codebase.
+
+## Issues found
+
+| Severity | Number of issues found |
+| -------- | ---------------------- |
+| High     | 3                      |
+| Medium   | 3                      |
+| Low      | 1                      |
+| Info     | 7                      |
+| Gas      | 2                      |
+| Total    | 16                     |
+
+# Findings
+
+## High
+
 ### [H-1] Reentrancy attack in `PuppyRaffle::refund` allows entrant to drain raffle balance
 
 **Description** : The `PuppyRaffle::refund` function does not follow CEI (Checks, Effects, Interactions) and as a result enables participants to drain the contract balance.
@@ -225,6 +337,8 @@ Although you could use `selfDestruct` to send ETH to this contract in order for 
 
 There are more attack vectors with that final require, so we recommend removing it regardless.
 
+## Medium
+
 ### [M-1] Looping through players array to check for duplicates in `PuppyRaffle::enterRaffle` is a potential denial of service (DoS) attack, incrementing gas costs for future entrants
 
 **Description:** The `PuppyRaffle:enterRaffle` function loops through the `players` array to check for duplicates. However, the longer
@@ -423,7 +537,7 @@ Also, true winners would not get paid out and someone else could take their mone
 
 > Pull over Push
 
-# Low
+## Low
 
 ### [L-1] `PuppyRaffle::getActivePlayerIndex` returns 0 for non-existent players and for players at index 0, causing a player at index 0 to incorrectly think they have not entered the raffle
 
@@ -451,7 +565,7 @@ Also, true winners would not get paid out and someone else could take their mone
 
 You could also reverse the 0th position for any competition, but a better solution might be to return an `int256` where the function returns -1 if the player is not active
 
-# Gas
+## Gas
 
 ### [G-1] Unchanged state variables should be declared constant or immutable.
 
@@ -478,6 +592,8 @@ Everytime you call `players.length` you read from storage, as opposed to memory 
             }
         }
 ```
+
+## Informational/Non_Critis
 
 ### [I-1] Solidity pragma should be specific, not wide
 
@@ -546,5 +662,3 @@ Instead, you could use:
 ### [I-6] State changes are missing events
 
 ### [I-7] `PuppyRaffle::_isActivePlayer` is never used and should be removed
-
-# Additional findings not taught in course
