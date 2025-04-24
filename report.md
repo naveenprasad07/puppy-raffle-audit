@@ -58,13 +58,13 @@ If all arguments are strings and or bytes, `bytes.concat()` should be used inste
 <details><summary>2 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 197](src/PuppyRaffle.sol#L197)
+- Found in src/PuppyRaffle.sol [Line: 246](src/PuppyRaffle.sol#L246)
 
 	```solidity
 	            abi.encodePacked(
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 201](src/PuppyRaffle.sol#L201)
+- Found in src/PuppyRaffle.sol [Line: 250](src/PuppyRaffle.sol#L250)
 
 	```solidity
 	                        abi.encodePacked(
@@ -81,7 +81,7 @@ Introduce checks for `msg.sender` in the function
 <details><summary>1 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 157](src/PuppyRaffle.sol#L157)
+- Found in src/PuppyRaffle.sol [Line: 198](src/PuppyRaffle.sol#L198)
 
 	```solidity
 	    function withdrawFees() external {
@@ -98,7 +98,7 @@ A contract's balance can be forcibly manipulated by another selfdestructing cont
 <details><summary>1 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 158](src/PuppyRaffle.sol#L158)
+- Found in src/PuppyRaffle.sol [Line: 201](src/PuppyRaffle.sol#L201)
 
 	```solidity
 	        require(address(this).balance == uint256(totalFees), "PuppyRaffle: There are currently players active!");
@@ -115,7 +115,7 @@ The use of keccak256 hash functions on predictable values like block.timestamp, 
 <details><summary>1 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 129](src/PuppyRaffle.sol#L129)
+- Found in src/PuppyRaffle.sol [Line: 151](src/PuppyRaffle.sol#L151)
 
 	```solidity
 	            uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp, block.difficulty))) % players.length;
@@ -134,13 +134,13 @@ Contracts have owners with privileged rights to perform admin tasks and need to 
 <details><summary>2 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 18](src/PuppyRaffle.sol#L18)
+- Found in src/PuppyRaffle.sol [Line: 20](src/PuppyRaffle.sol#L20)
 
 	```solidity
 	contract PuppyRaffle is ERC721, Ownable {
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 167](src/PuppyRaffle.sol#L167)
+- Found in src/PuppyRaffle.sol [Line: 211](src/PuppyRaffle.sol#L211)
 
 	```solidity
 	    function changeFeeAddress(address newFeeAddress) external onlyOwner {
@@ -174,13 +174,13 @@ Check for `address(0)` when assigning values to address state variables.
 <details><summary>2 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 62](src/PuppyRaffle.sol#L62)
+- Found in src/PuppyRaffle.sol [Line: 70](src/PuppyRaffle.sol#L70)
 
 	```solidity
 	        feeAddress = _feeAddress;
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 168](src/PuppyRaffle.sol#L168)
+- Found in src/PuppyRaffle.sol [Line: 212](src/PuppyRaffle.sol#L212)
 
 	```solidity
 	        feeAddress = newFeeAddress;
@@ -197,19 +197,19 @@ Instead of marking a function as `public`, consider marking it as `external` if 
 <details><summary>3 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 79](src/PuppyRaffle.sol#L79)
+- Found in src/PuppyRaffle.sol [Line: 87](src/PuppyRaffle.sol#L87)
 
 	```solidity
 	    function enterRaffle(address[] memory newPlayers) public payable {
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 96](src/PuppyRaffle.sol#L96)
+- Found in src/PuppyRaffle.sol [Line: 107](src/PuppyRaffle.sol#L107)
 
 	```solidity
 	    function refund(uint256 playerIndex) public {
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 189](src/PuppyRaffle.sol#L189)
+- Found in src/PuppyRaffle.sol [Line: 238](src/PuppyRaffle.sol#L238)
 
 	```solidity
 	    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -226,19 +226,19 @@ If the same constant literal value is used multiple times, create a constant sta
 <details><summary>3 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 132](src/PuppyRaffle.sol#L132)
+- Found in src/PuppyRaffle.sol [Line: 161](src/PuppyRaffle.sol#L161)
 
 	```solidity
 	        uint256 prizePool = (totalAmountCollected * 80) / 100;
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 133](src/PuppyRaffle.sol#L133)
+- Found in src/PuppyRaffle.sol [Line: 162](src/PuppyRaffle.sol#L162)
 
 	```solidity
 	        uint256 fee = (totalAmountCollected * 20) / 100;
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 139](src/PuppyRaffle.sol#L139)
+- Found in src/PuppyRaffle.sol [Line: 178](src/PuppyRaffle.sol#L178)
 
 	```solidity
 	        uint256 rarity = uint256(keccak256(abi.encodePacked(msg.sender, block.difficulty))) % 100;
@@ -255,19 +255,19 @@ Index event fields make the field more quickly accessible to off-chain tools tha
 <details><summary>3 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 53](src/PuppyRaffle.sol#L53)
+- Found in src/PuppyRaffle.sol [Line: 59](src/PuppyRaffle.sol#L59)
 
 	```solidity
 	    event RaffleEnter(address[] newPlayers);
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 54](src/PuppyRaffle.sol#L54)
+- Found in src/PuppyRaffle.sol [Line: 60](src/PuppyRaffle.sol#L60)
 
 	```solidity
 	    event RaffleRefunded(address player);
 	```
 
-- Found in src/PuppyRaffle.sol [Line: 55](src/PuppyRaffle.sol#L55)
+- Found in src/PuppyRaffle.sol [Line: 61](src/PuppyRaffle.sol#L61)
 
 	```solidity
 	    event FeeAddressChanged(address newFeeAddress);
@@ -284,7 +284,7 @@ Avoid `require` / `revert` statements in a loop because a single bad item can ca
 <details><summary>1 Found Instances</summary>
 
 
-- Found in src/PuppyRaffle.sol [Line: 87](src/PuppyRaffle.sol#L87)
+- Found in src/PuppyRaffle.sol [Line: 97](src/PuppyRaffle.sol#L97)
 
 	```solidity
 	            for (uint256 j = i + 1; j < players.length; j++) {
